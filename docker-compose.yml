@@ -1,45 +1,14 @@
-name: "automate"
-
 services:
-  app:
-    build:
-      context: .
-      dockerfile: .docker/Dockerfile
-    volumes:
-      - .:/var/www/html
-      - .docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    depends_on:
-      - mysql
-
-  nginx:
-    image: nginx:1
+  db:
+    image: bitnami/postgresql:17
     ports:
-      - "8000:80"
-    volumes:
-      - .:/var/www/html
-      - .docker/nginx.conf:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - app
-
-  mysql:
-    image: mysql:9
+      - '5472:5432'
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: automate
+      - POSTGRES_USER=docker
+      - POSTGRES_PASSWORD=docker
+      - POSTGRES_DB=automate
     volumes:
-      - db_data:/var/lib/mysql
-
-  adminer:
-    image: adminer
-    ports:
-      - "8080:8080"
-
-  mailhog:
-    image: mailhog/mailhog
-    ports:
-      - "8025:8025"
+      - db-data:/bitnami/postgresql
 
 volumes:
-  db_data:
+  db-data:
