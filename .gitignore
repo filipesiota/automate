@@ -1,2 +1,9 @@
-node_modules/
-/generated/prisma
+# Dependencies
+node_modules
+
+# Environment variables
+.env
+.env.test
+
+# Application
+build
