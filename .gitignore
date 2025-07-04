@@ -7,3 +7,6 @@ node_modules
 
 # Application
 build
+
+# Database
+/generated/prisma

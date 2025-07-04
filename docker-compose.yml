@@ -1,0 +1,9 @@
+services:
+  pg:
+    image: bitnami/postgresql:17
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRESQL_USERNAME: docker
+      POSTGRESQL_PASSWORD: docker
+      POSTGRESQL_DATABASE: automate
