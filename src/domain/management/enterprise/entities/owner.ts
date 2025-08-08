@@ -6,6 +6,10 @@ interface OwnerProps {
 }
 
 export class Owner extends Entity<OwnerProps> {
+  set name(name: string) {
+    this.props.name = name
+  }
+
   get name() {
     return this.props.name
   }
