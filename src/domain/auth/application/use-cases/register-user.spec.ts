@@ -2,8 +2,7 @@ import { InMemoryUserRepository } from 'test/repositories/in-memory-user-reposit
 import { RegisterUserUseCase } from './register-user'
 import { FakeHasher } from 'test/cryptography/fake-hasher'
 import { makeUser } from 'test/factories/make-user'
-import { UserAlreadyExistsError } from './errors/user-already-exists-error'
-import { InvalidPasswordConfirmationError } from './errors/invalid-password-confirmation-error'
+import { ResourceAlreadyExistsError } from '@/core/errors/resource-already-exists-error'
 
 let inMemoryUserRepository: InMemoryUserRepository
 let fakeHasher: FakeHasher
@@ -23,7 +22,6 @@ describe('Register User', () => {
       name: mockUser.name,
       email: mockUser.email,
       password: mockUser.password,
-      passwordConfirmation: mockUser.password,
     })
 
     expect(result.isRight()).toBe(true)
@@ -37,7 +35,6 @@ describe('Register User', () => {
       name: mockUser.name,
       email: mockUser.email,
       password: mockUser.password,
-      passwordConfirmation: mockUser.password,
     })
 
     const hashedPassword = await fakeHasher.hash(mockUser.password)
@@ -46,19 +43,7 @@ describe('Register User', () => {
     expect(inMemoryUserRepository.items[0].password).toBe(hashedPassword)
   })
 
-  it('should return invalid password confirmation error when provided passwords do not match', async () => {
-    const result = await sut.execute({
-      name: mockUser.name,
-      email: mockUser.email,
-      password: '123456',
-      passwordConfirmation: '123',
-    })
-
-    expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(InvalidPasswordConfirmationError)
-  })
-
-  it('should return user already exists error when provided email is inside the database', async () => {
+  it('should return resource already exists error when provided email is in use by another user', async () => {
     const existentUser = makeUser()
 
     inMemoryUserRepository.items.push(existentUser)
@@ -67,10 +52,9 @@ describe('Register User', () => {
       name: mockUser.name,
       email: existentUser.email,
       password: mockUser.password,
-      passwordConfirmation: mockUser.password,
     })
 
     expect(result.isLeft()).toBe(true)
-    expect(result.value).toBeInstanceOf(UserAlreadyExistsError)
+    expect(result.value).toBeInstanceOf(ResourceAlreadyExistsError)
   })
 })

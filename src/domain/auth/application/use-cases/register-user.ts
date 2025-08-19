@@ -2,18 +2,16 @@ import { Either, left, right } from '@/core/either'
 import { User } from '../../enterprise/entities/user'
 import { UserRepository } from '../repositories/user-repository'
 import { HashGenerator } from '../cryptography/hash-generator'
-import { UserAlreadyExistsError } from './errors/user-already-exists-error'
-import { InvalidPasswordConfirmationError } from './errors/invalid-password-confirmation-error'
+import { ResourceAlreadyExistsError } from '@/core/errors/resource-already-exists-error'
 
 interface RegisterUserUseCaseRequest {
   name: string
   email: string
   password: string
-  passwordConfirmation: string
 }
 
 type RegisterUserUseCaseResponse = Either<
-  UserAlreadyExistsError | InvalidPasswordConfirmationError,
+  ResourceAlreadyExistsError,
   {
     user: User
   }
@@ -29,16 +27,16 @@ export class RegisterUserUseCase {
     name,
     email,
     password,
-    passwordConfirmation,
   }: RegisterUserUseCaseRequest): Promise<RegisterUserUseCaseResponse> {
-    if (password !== passwordConfirmation) {
-      return left(new InvalidPasswordConfirmationError())
-    }
-
     const userWithSameEmail = await this.userRepository.findByEmail(email)
 
     if (userWithSameEmail) {
-      return left(new UserAlreadyExistsError(email))
+      return left(
+        new ResourceAlreadyExistsError('user', {
+          label: 'email',
+          value: email,
+        }),
+      )
     }
 
     const hashedPassword = await this.hashGenerator.hash(password)
