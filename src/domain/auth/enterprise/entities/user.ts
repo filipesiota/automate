@@ -7,7 +7,7 @@ export interface UserProps {
   email: string
   password: string
   createdAt: Date
-  updatedAt?: Date | null
+  updatedAt: Date
   deletedAt?: Date | null
 }
 
@@ -24,11 +24,27 @@ export class User extends Entity<UserProps> {
     return this.props.password
   }
 
-  static create(props: Optional<UserProps, 'createdAt'>, id?: UniqueEntityId) {
+  get createdAt() {
+    return this.props.createdAt
+  }
+
+  get updatedAt() {
+    return this.props.updatedAt
+  }
+
+  get deletedAt() {
+    return this.props.deletedAt
+  }
+
+  static create(
+    props: Optional<UserProps, 'createdAt' | 'updatedAt'>,
+    id?: UniqueEntityId,
+  ) {
     const user = new User(
       {
         ...props,
         createdAt: props.createdAt ?? new Date(),
+        updatedAt: props.updatedAt ?? new Date(),
       },
       id,
     )
