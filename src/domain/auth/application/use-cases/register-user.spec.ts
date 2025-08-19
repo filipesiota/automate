@@ -1,7 +1,7 @@
-import { InMemoryUserRepository } from 'test/repositories/in-memory-user-repository'
+import { InMemoryUserRepository } from '@/test/repositories/in-memory-user-repository'
 import { RegisterUserUseCase } from './register-user'
-import { FakeHasher } from 'test/cryptography/fake-hasher'
-import { makeUser } from 'test/factories/make-user'
+import { FakeHasher } from '@/test/cryptography/fake-hasher'
+import { makeUser } from '@/test/factories/make-user'
 import { ResourceAlreadyExistsError } from '@/core/errors/resource-already-exists-error'
 
 let inMemoryUserRepository: InMemoryUserRepository
