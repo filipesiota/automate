@@ -4,7 +4,7 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import {
   User,
   UserProps,
-} from '@/domain/authentication/enterprise/entities/user'
+} from '@/domain/auth/enterprise/entities/user'
 
 export function makeUser(
   override: Partial<UserProps> = {},
