@@ -1,6 +1,6 @@
 import { Either, left, right } from '@/core/either'
 import { User } from '../../enterprise/entities/user'
-import { UsersRepository } from '../repositories/users-repository'
+import { UserRepository } from '../repositories/user-repository'
 import { HashGenerator } from '../cryptography/hash-generator'
 import { UserAlreadyExistsError } from './errors/user-already-exists-error'
 import { InvalidPasswordConfirmationError } from './errors/invalid-password-confirmation-error'
@@ -21,7 +21,7 @@ type RegisterUserUseCaseResponse = Either<
 
 export class RegisterUserUseCase {
   constructor(
-    private readonly userRepository: UsersRepository,
+    private readonly userRepository: UserRepository,
     private readonly hashGenerator: HashGenerator,
   ) {}
 
