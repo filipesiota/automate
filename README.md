@@ -32,5 +32,6 @@
 - [ ] Os dados da aplicação precisam estar persistidos em um banco PostgreSQL;
 - [ ] Todas listas de dados precisam estar paginadas com 20 itens por página;
 - [ ] O usuário deve ser identificado por um JWT (JSON Web Token);
-- [ ] O access token do usuário deve ser válido por 10 minutos;
-- [ ] O usuário deve receber um refresh token, válido por 7 dias;
+- [ ] O access token do usuário deve ser válido por 15 minutos;
+- [ ] O usuário deve receber um refresh token, válido por 30 dias;
+- [ ] Quando um refresh token for utilizado para gerar um access token, deve ser gerado outro refresh token;
