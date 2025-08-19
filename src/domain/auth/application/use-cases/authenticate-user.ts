@@ -3,6 +3,12 @@ import { UserRepository } from '../repositories/user-repository'
 import { HashComparer } from '../cryptography/hash-comparer'
 import { InvalidCredentialsError } from './errors/invalid-credentials-error'
 import { Encrypter } from '../cryptography/encrypter'
+import { UserTokenRepository } from '../repositories/user-token-repository'
+import {
+  UserToken,
+  UserTokenTypeEnum,
+} from '../../enterprise/entities/user-token'
+import { DateCalculator, TimeUnit } from '@/core/utils/date-calculator'
 
 interface AuthenticateUserUseCaseRequest {
   email: string
@@ -13,15 +19,17 @@ type AuthenticateUserUseCaseResponse = Either<
   InvalidCredentialsError,
   {
     accessToken: string
-    refreshToken: string
+    refreshToken: UserToken
   }
 >
 
 export class AuthenticateUserUseCase {
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly userTokenRepository: UserTokenRepository,
     private readonly hashComparer: HashComparer,
     private readonly encrypter: Encrypter,
+    private readonly dateCalculator: DateCalculator,
   ) {}
 
   async execute({
@@ -47,9 +55,16 @@ export class AuthenticateUserUseCase {
       sub: user.id.toString(),
     })
 
-    const refreshToken = await this.encrypter.encrypt({
-      sub: user.id.toString(),
+    const refreshToken = UserToken.create({
+      userId: user.id.toString(),
+      type: UserTokenTypeEnum.REFRESH_TOKEN,
+      token: await this.encrypter.encrypt({
+        sub: user.id.toString(),
+      }),
+      expiresAt: this.dateCalculator.add(new Date(), 30, TimeUnit.Day),
     })
+
+    await this.userTokenRepository.create(refreshToken)
 
     return right({
       accessToken,
