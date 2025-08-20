@@ -7,3 +7,17 @@ services:
       POSTGRESQL_USERNAME: docker
       POSTGRESQL_PASSWORD: docker
       POSTGRESQL_DATABASE: automate
+    volumes:
+      - pg_data:/bitnami/postgresql
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+volumes:
+  pg_data:
+  rabbitmq_data:
