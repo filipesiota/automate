@@ -1,8 +1,9 @@
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
-import { DomainEvent } from '@/core/events/domain-event'
+import { AsyncDomainEvent } from '@/core/events/domain-event'
 import { User } from '../entities/user'
 
-export class UserCreatedEvent implements DomainEvent {
+export class UserCreatedEvent implements AsyncDomainEvent {
+  public eventName: string = UserCreatedEvent.name
   public ocurredAt: Date
   public user: User
 

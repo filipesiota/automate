@@ -1,14 +1,23 @@
 import { AggregateRoot } from '../entities/aggregate-root'
 import { UniqueEntityId } from '../entities/unique-entity-id'
-import { DomainEvent } from './domain-event'
+import { DomainEvent, AsyncDomainEvent } from './domain-event'
+import { EventPublisher } from './event-publisher'
 
 type DomainEventCallback = (event: unknown) => void
 
 export class DomainEvents {
   private static handlersMap: Record<string, DomainEventCallback[]> = {}
   private static markedAggregates: AggregateRoot<unknown>[] = []
+  private static publisher: EventPublisher
+  private static shouldRun = true
 
-  public static shouldRun = true
+  public static setPublisher(publisher: EventPublisher) {
+    this.publisher = publisher
+  }
+
+  public static setShouldRun(shouldRun: boolean) {
+    this.shouldRun = shouldRun
+  }
 
   public static markAggregateForDispatch(aggregate: AggregateRoot<unknown>) {
     const aggregateFound = !!this.findMarkedAggregateByID(aggregate.id)
@@ -68,13 +77,18 @@ export class DomainEvents {
   }
 
   private static dispatch(event: DomainEvent) {
-    const eventClassName: string = event.constructor.name
-
-    const isEventRegistered = eventClassName in this.handlersMap
-
     if (!this.shouldRun) {
       return
     }
+
+    if (event instanceof AsyncDomainEvent) {
+      this.publisher.publish(event)
+      return
+    }
+
+    const eventClassName: string = event.constructor.name
+
+    const isEventRegistered = eventClassName in this.handlersMap
 
     if (isEventRegistered) {
       const handlers = this.handlersMap[eventClassName]
