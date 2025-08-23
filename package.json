@@ -1,6 +1,7 @@
 {
   "name": "automate",
   "version": "1.0.0",
+  "license": "ISC",
   "scripts": {
     "dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
