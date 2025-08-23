@@ -33,10 +33,11 @@ describe('User Forgot Password', () => {
   it('should be able to start forget password process', async () => {
     vi.spyOn(dateCalculator, 'add')
 
-    await sut.execute({
+    const result = await sut.execute({
       email: mockUser.email,
     })
 
+    expect(result.isRight()).toBe(true)
     expect(dateCalculator.add).toHaveBeenCalledExactlyOnceWith(
       expect.any(Date),
       10,

@@ -23,6 +23,10 @@ export class User extends AggregateRoot<UserProps> {
     return this.props.email
   }
 
+  set password(password: string) {
+    this.props.password = password
+  }
+
   get password() {
     return this.props.password
   }

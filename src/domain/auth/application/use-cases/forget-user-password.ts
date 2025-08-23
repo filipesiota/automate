@@ -8,10 +8,20 @@ import {
   UserTokenTypeEnum,
 } from '../../enterprise/entities/user-token'
 import { DomainEvents } from '@/core/events/domain-events'
+import { ResourceNotFoundError } from '@/core/errors/resource-not-found-error'
+import { Either, left, right } from '@/core/either'
+import { User } from '../../enterprise/entities/user'
 
 interface ForgetUserPasswordUseCaseRequest {
   email: string
 }
+
+type ForgetUserPasswordUseCaseResponse = Either<
+  ResourceNotFoundError,
+  {
+    user: User
+  }
+>
 
 export class ForgetUserPasswordUseCase {
   constructor(
@@ -20,11 +30,18 @@ export class ForgetUserPasswordUseCase {
     private readonly dateCalculator: DateCalculator,
   ) {}
 
-  async execute({ email }: ForgetUserPasswordUseCaseRequest): Promise<void> {
+  async execute({
+    email,
+  }: ForgetUserPasswordUseCaseRequest): Promise<ForgetUserPasswordUseCaseResponse> {
     const user = await this.userRepository.findByEmail(email)
 
     if (!user) {
-      return
+      return left(
+        new ResourceNotFoundError('User', {
+          label: 'email',
+          value: email,
+        }),
+      )
     }
 
     const passwordResetToken = UserToken.create({
@@ -37,6 +54,11 @@ export class ForgetUserPasswordUseCase {
     await this.userTokenRepository.create(passwordResetToken)
 
     user.forgotPassword(passwordResetToken.token)
+
     DomainEvents.dispatchEventsForAggregate(user.id)
+
+    return right({
+      user,
+    })
   }
 }

@@ -14,7 +14,15 @@ export class InMemoryUserTokenRepository implements UserTokenRepository {
     return userToken
   }
 
-  async create(token: UserToken): Promise<void> {
-    this.items.push(token)
+  async create(userToken: UserToken): Promise<void> {
+    this.items.push(userToken)
+  }
+
+  async delete(userToken: UserToken): Promise<void> {
+    const itemIndex = this.items.findIndex(
+      (item) => item.id.toString() === userToken.id.toString(),
+    )
+
+    this.items.splice(itemIndex, 1)
   }
 }
