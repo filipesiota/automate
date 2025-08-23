@@ -3,7 +3,7 @@ import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { UserCreatedEvent } from '../events/user-created-event'
 import { VerifyUserEmailEvent } from '../events/verify-user-email-event'
-import { UserForgotPasswordEvent } from '../events/user-forgot-password-event'
+import { ForgetUserPasswordEvent } from '../events/user-forgot-password-event'
 
 export interface UserProps {
   name: string
@@ -40,7 +40,7 @@ export class User extends AggregateRoot<UserProps> {
   }
 
   forgotPassword(token: string) {
-    this.addDomainEvent(new UserForgotPasswordEvent(this, token))
+    this.addDomainEvent(new ForgetUserPasswordEvent(this, token))
   }
 
   verifyEmail(token: string) {

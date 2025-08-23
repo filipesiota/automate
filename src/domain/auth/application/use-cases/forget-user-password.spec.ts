@@ -5,12 +5,12 @@ import { InMemoryUserTokenRepository } from '@/test/repositories/in-memory-user-
 import { DayjsDateCalculator } from '@/infra/utils/dayjs-date-calculator'
 import { UserTokenTypeEnum } from '../../enterprise/entities/user-token'
 import { TimeUnit } from '@/core/utils/date-calculator'
-import { UserForgotPasswordUseCase } from './user-forgot-password'
+import { ForgetUserPasswordUseCase } from './forget-user-password'
 
 let inMemoryUserRepository: InMemoryUserRepository
 let inMemoryUserTokenRepository: InMemoryUserTokenRepository
 let dateCalculator: DayjsDateCalculator
-let sut: UserForgotPasswordUseCase
+let sut: ForgetUserPasswordUseCase
 
 describe('User Forgot Password', () => {
   let mockUser: User
@@ -19,7 +19,7 @@ describe('User Forgot Password', () => {
     inMemoryUserRepository = new InMemoryUserRepository()
     inMemoryUserTokenRepository = new InMemoryUserTokenRepository()
     dateCalculator = new DayjsDateCalculator()
-    sut = new UserForgotPasswordUseCase(
+    sut = new ForgetUserPasswordUseCase(
       inMemoryUserRepository,
       inMemoryUserTokenRepository,
       dateCalculator,

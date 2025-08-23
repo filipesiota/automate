@@ -9,18 +9,18 @@ import {
 } from '../../enterprise/entities/user-token'
 import { DomainEvents } from '@/core/events/domain-events'
 
-interface UserForgotPasswordUseCaseRequest {
+interface ForgetUserPasswordUseCaseRequest {
   email: string
 }
 
-export class UserForgotPasswordUseCase {
+export class ForgetUserPasswordUseCase {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly userTokenRepository: UserTokenRepository,
     private readonly dateCalculator: DateCalculator,
   ) {}
 
-  async execute({ email }: UserForgotPasswordUseCaseRequest): Promise<void> {
+  async execute({ email }: ForgetUserPasswordUseCaseRequest): Promise<void> {
     const user = await this.userRepository.findByEmail(email)
 
     if (!user) {
