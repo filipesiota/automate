@@ -4,6 +4,7 @@ import { Optional } from '@/core/types/optional'
 
 export enum UserTokenTypeEnum {
   REFRESH_TOKEN = 'refresh_token',
+  PASSWORD_RESET = 'password_reset',
 }
 
 export interface UserTokenProps {

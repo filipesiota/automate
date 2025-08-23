@@ -2,6 +2,8 @@ import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { UniqueEntityId } from '@/core/entities/unique-entity-id'
 import { Optional } from '@/core/types/optional'
 import { UserCreatedEvent } from '../events/user-created-event'
+import { VerifyUserEmailEvent } from '../events/verify-user-email-event'
+import { UserForgotPasswordEvent } from '../events/user-forgot-password-event'
 
 export interface UserProps {
   name: string
@@ -35,6 +37,14 @@ export class User extends AggregateRoot<UserProps> {
 
   get deletedAt() {
     return this.props.deletedAt
+  }
+
+  forgotPassword(token: string) {
+    this.addDomainEvent(new UserForgotPasswordEvent(this, token))
+  }
+
+  verifyEmail(token: string) {
+    this.addDomainEvent(new VerifyUserEmailEvent(this, token))
   }
 
   static create(
